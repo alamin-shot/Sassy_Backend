@@ -1,4 +1,3 @@
-// backend/src/modules/projects/projects.service.ts
 import Project from "../../models/Project.model";
 import User from "../../models/User.model";
 import { AppError } from "../../middleware/errorHandler";
@@ -37,6 +36,7 @@ export const getUserProjects = async (
   const total = await Project.countDocuments(filter);
   const projects = await Project.find(filter)
     .populate("owner", "name email avatar")
+    .populate("members.user", "name email avatar") // Add this to get member details
     .sort({ updatedAt: -1 })
     .skip((page - 1) * limit)
     .limit(limit);
@@ -62,7 +62,7 @@ export const updateProject = async (
     { _id: projectId, owner: userId },
     data,
     { new: true, runValidators: true },
-  );
+  ).populate("members.user", "name email avatar");
   if (!project) throw new AppError("Project not found or unauthorized", 404);
   return project;
 };
@@ -106,5 +106,5 @@ export const removeMember = async (
     (m) => m.user.toString() !== memberId,
   );
   await project.save();
-  return project;
+  return project.populate("members.user", "name email avatar");
 };

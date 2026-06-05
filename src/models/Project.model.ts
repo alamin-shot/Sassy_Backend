@@ -1,9 +1,9 @@
-// backend/src/models/Project.model.ts
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IProject extends Document {
   name: string;
   description?: string;
+  coverImage?: string; // Add this
   owner: mongoose.Types.ObjectId;
   members: Array<{
     user: mongoose.Types.ObjectId;
@@ -18,6 +18,7 @@ const projectSchema = new Schema<IProject>(
   {
     name: { type: String, required: true, trim: true, maxlength: 100 },
     description: { type: String, maxlength: 500 },
+    coverImage: { type: String, default: null }, // Add this
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
