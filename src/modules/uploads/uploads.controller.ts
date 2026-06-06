@@ -1,21 +1,17 @@
-import { Request, Response } from "express";
+// backend/src/modules/uploads/uploads.controller.ts
+import { Request, Response, NextFunction } from "express";
+import { processUpload } from "./uploads.service";
+import { sendSuccess } from "../../utils/response.utils";
 
-export const uploadProjectImage = async (req: Request, res: Response) => {
+export const uploadProjectImage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: "No file uploaded" });
-    }
-
-    // Return the file URL
-    const imageUrl = `/uploads/projects/${req.file.filename}`;
-
-    res.status(200).json({
-      success: true,
-      url: imageUrl,
-      message: "Image uploaded successfully",
-    });
-  } catch (error) {
-    console.error("Upload error:", error);
-    res.status(500).json({ message: "Failed to upload image" });
+    const result = processUpload(req.file);
+    sendSuccess(res, result, "Image uploaded", 201);
+  } catch (err) {
+    next(err);
   }
 };

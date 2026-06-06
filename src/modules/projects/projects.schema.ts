@@ -1,16 +1,17 @@
+// backend/src/modules/projects/projects.schema.ts
 import { z } from "zod";
 
 export const createProjectSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
-  coverImage: z.string().optional(), // Add this
+  coverImage: z.string().optional(),
 });
 
 export const updateProjectSchema = z.object({
   name: z.string().min(1).max(100).optional(),
   description: z.string().max(500).optional(),
   status: z.enum(["active", "archived", "deleted"]).optional(),
-  coverImage: z.string().optional(), // Add this
+  coverImage: z.string().optional(),
 });
 
 export const addMemberSchema = z.object({
